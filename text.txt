@@ -1,0 +1,349 @@
+Bom professor, estou fazendo sozinho o da biblioteca;
+
+///
+"- Cadastro de livros: anota-se para cada livro o ISBN, nome,
+autor(es), editora e ano de publicação. Editora pode ser
+relacionada como String.
+- Cadastro de autores: anota-se apenas o nome do autor e o país de
+origem.
+- Cadastro de clientes: cliente contém como informação a
+matrícula, o nome e telefone.
+- Retirada de livros: registra a retirada de livros de um cliente. Um
+cliente pode retirar no máximo três livros e o livro deve estar 
+disponível na biblioteca. Essa funcionalidade calcula uma data
+para entrega."
+///
+
+
+N pra 1 em AUTORES
+
+Pelo que entendi, nome do autor vai ser FK entre a tabela de autores e livros.
+Pra mim elas são n pra n, o que geraria uma nova tabela.
+Devo tratar a inserção como obrigatória? essas tabelas precisam estar conectadas? fiz o crud delas já mas não conectei ainda, e não sei se saberia fazer isso.
+
+CONCEITO B FAZER CONEXAO ENTRE ELAS
+
+Clientes e retirada de livros seguem a mesma logica, ID cliente como FK na tabela de retiradas? (ou movimento, a tabela responsavel pelas locações).
+
+Qual a regra para o calculo da data de entrega?
+Isso deve retornar em row de um JSON da tabela de retiradas?
+
+Criar uma regra de entrega
+
+
+
+////"Devolução de livros: registra a devolução de livros de um cliente.
+Durante a devolução, o livro torna-se disponível novamente na
+biblioteca. Verifica se o livro está com atraso e calcula o número
+de dias de atraso."
+////
+
+Novamente, Qual a regra para o calculo da data de entrega para calcular o atraso?
+
+Cada livro conta como tendo apenas uma unidade? Quantas unidades devo considerar que cada livro tem?
+
+
+///"- Autenticação do usuário: usuário da biblioteca possui um
+usuário e uma senha para realizar autenticação (já pré-definidos
+no banco de dados).
+"
+
+Essa é só pra ter certeza => portando clientes não precisam ser autenticados, afinal é somente a pessoa que trabalha na biblioteca que interage com o sistema certo?
+
+Muito obrigado ! =D
+
+
+
+
+CRIAR UMA REGRA DE ENTREGA
+
+CONTROLE EXISTENCIA AUTOR NO CONTROLLER
+
+CONTROLE EXISTENCIA CLIENTE NO CONTROLLER
+
+
+
+________________________________________________________________________________________________________________________________
+
+
+router.get("/", autoresController.listar);
+http://localhost:3000/api/autores
+
+router.post("/", autoresController.inserir);
+{
+    "nome": "Autor de Prog Internet",
+    "pais_origem": "Algum lugar entre 0 e 1"
+}
+
+router.get("/:id_autor", autoresController.buscarPorid_autor);
+http://localhost:3000/api/autores/8
+
+
+router.put("/:id_autor", autoresController.atualizar);
+
+
+router.delete("/:id_autor", autoresController.deletar);
+
+9
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+router.get("/", livrosController.listar);
+http://localhost:3000/api/livros
+
+router.get("/listarDisponivel", livrosController.listarDisponivel);
+http://localhost:3000/api/livros/listarDisponivel
+
+router.get("/listarIndisponivel", livrosController.listarIndisponivel);
+http://localhost:3000/api/livros/listarIndisponivel
+
+router.post("/", livrosController.inserir);
+http://localhost:3000/api/livros
+{
+    "isbn": 78541,
+    "nome": "Aprendendo Prog 2",
+    "id_autor": 9,
+    "editora": "TI SENAC",
+    "ano": 2022,
+    "quantidade": 6
+}
+
+router.get("/nome", livrosController.buscarPorNome);
+http://localhost:3000/api/livros/nome?nome=Aprendendo Prog 2
+
+router.get("/autor", livrosController.buscarPorid_autor);
+http://localhost:3000/api/livros/autor?id_autor=9
+
+router.get("/:id_livro", livrosController.buscarPorid_livro);
+http://localhost:3000/api/livros/74
+
+router.put("/:id_livro", livrosController.atualizar);
+
+
+router.delete("/:id_livro", livrosController.deletar);
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+router.get("/", clientesController.listar);
+http://localhost:3000/api/clientes
+
+router.post("/", clientesController.inserir);
+{
+    "matricula": 66,
+    "nome": "Jonny",
+    "telefone": "5199772233"
+}
+
+router.get("/nome", clientesController.buscarPorNome);
+http://localhost:3000/api/clientes/nome?nome=Jonny
+
+router.get("/:id_cliente", clientesController.buscarPorid_cliente);
+http://localhost:3000/api/clientes/11
+
+router.put("/:id_cliente", clientesController.atualizar);
+
+router.delete("/:id_cliente", clientesController.deletar);
+
+12
+
+71 /   4         "id_cliente": 4,
+    "id_livro": 71,
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+router.get("/", locacoesController.listar);
+http://localhost:3000/api/locacoes
+
+router.get("/listarAguardando", locacoesController.listarAguardando);
+http://localhost:3000/api/locacoes/listarAguardando
+
+router.get("/listarDevolvido", locacoesController.listarDevolvido);
+http://localhost:3000/api/locacoes/listarDevolvido
+
+router.post("/", locacoesController.retirar);
+{
+    "id_cliente": 12,
+    "id_livro": 77
+}
+
+router.get("/:id_locacao", locacoesController.buscarPorid_locacao);
+http://localhost:3000/api/locacoes
+
+router.put("/:id_locacao", locacoesController.devolver); 
+http://localhost:3000/api/locacoes
+
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+http://localhost:3000/api/auth - post
+{
+    "username": "admin",
+    "password": "admin"
+}
+
+
+x-auth-token
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTYyMjkzMDA3NiwiZXhwIjoxNjIyOTMzNjc2fQ._Dazw1bz_VwCGI6zS14wRZRhPckN_YMCoyqXMB20biw
+
+
+
+
+
+
+
+livros
+
+{
+    "isbn": "12334",
+    "nome": "Harry Potter",
+    "id_autor": 15,
+    "editora": "Bloomsbury Publishing",
+    "ano": 1998,
+    "quantidade": 10
+}
+
+
+http://localhost:3000/api/livros/listarDisponivel
+http://localhost:3000/api/livros/nome?nome=Anjos
+http://localhost:3000/api/livros/autor?id_autor=5
+
+
+autores
+
+{
+    "nome": "cucaraxa",
+    "pais_origem": "Brasil"
+}
+
+clientes
+
+{
+    "matricula": 99,
+    "nome": "Rudini",
+    "telefone": "519977"
+}
+
+
+retiradas/completo
+
+{
+    "id_cliente": 5,
+    "id_livro": 46
+}
+
+
+
+
+
+
+
+tabelas fk? n pra n ?
+
+usuario eh o usuario quem esta operando a biblioteca e n o cliente?
+
+is not a string?
+
+cada livro é unico ou tem quantidades?
+
+
+retirada
+nome
+quantidade
+
+
+
+{
+    "nome": "cucaraxa",
+    "pais_origem": "Brasil"
+}
+
+
+{
+    "matricula": "95434",
+    "nome": "Harry Potter",
+    "telefone": ""
+}
+
+
+{
+    "isbn": "13334",
+    "nome": "Harry Potter",
+    "autor": "Rowling",
+    "editora": "Bloomsbury Publishing",
+    "ano": 1998,
+    "quantidade": 10
+}
+
+{
+    "id_cliente": 1,
+    "id_livro": 1,
+    "quantidade": 2
+}
+
+    const livro = {
+        isbn: req.body.isbn,
+        nome: req.body.nome,
+        autor: req.body.autor,
+        editora: req.body.editora,
+        ano: req.body.ano
+    };
+
+{       
+    "matricula" : 51,
+    "nome" : "",
+    "telefone" : "5199772233"
+}
+
+
+module.exports = class Cliente {
+    constructor(id_cliente, matricula, nome, telefone) {
+        this.id_livro = id_cliente;        
+        this.matricula = matricula;
+        this.nome = nome;
+        this.telefone = telefone;
+    }
+}
+
+
+
+	id_livro = id_cliente;        
+        matricula = matricula;
+        nome = nome;
+        telefone = telefone;
+
+livro.
+
+(livro.isbn, livro.nome, livro.id_autor, livro.editora, livro.ano)
+
+"isbn", "nome", "id_autor", "editora", "ano"
+
+(isbn, nome, id_autor, editora, ano)
+
+
+INSERT INTO livros (isbn, nome, id_autor, editora, ano) VALUES (1234, "Harry", 1, "Abril", 1998)
+
+(2222, "Senhor", 2, "Abril", 2001)
+
+(3333, "Rei", 3, "Abril", 2003)
+
+(4, 4444, "Codigo", 4, "Abril", 2005)
+
+(5, 5555, "Anjos", 5, "Abril", 2011)
+
+
+	1	id_cliente Primária	int(11)			Não	Nenhum		AUTO_INCREMENT	Muda	Elimina	
+Mais
+	2	matricula Índice	int(11)			Não	Nenhum			Muda	Elimina	
+Mais
+	3	nome	varchar(40)	utf8mb4_general_ci		Não	Nenhum			Muda	Elimina	
+Mais
+	4	telefone
+
+
+
+
+arquivo separado para tratamento de erros
